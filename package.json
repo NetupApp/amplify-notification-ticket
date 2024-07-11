@@ -10,8 +10,16 @@
     "test": "jest"
   },
   "dependencies": {
+    "@aws-amplify/react-native": "^1.1.1",
+    "@aws-amplify/rtn-push-notification": "^1.2.29",
+    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-community/netinfo": "^11.3.2",
+    "aws-amplify": "^6.3.8",
     "react": "18.2.0",
-    "react-native": "0.74.3"
+    "react-native": "0.74.3",
+    "react-native-get-random-values": "^1.11.0",
+    "react-redux": "^9.1.2",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

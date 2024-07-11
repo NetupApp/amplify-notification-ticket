@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -24,6 +24,17 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import {
+  requestPermissions,
+  getPermissionStatus,
+} from 'aws-amplify/push-notifications';
+import {AppState} from 'react-native';
+import {handleAppStateChange} from './listeners/appStateListener';
+
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import TestScreen from './src/testScreen';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -56,6 +67,34 @@ function Section({children, title}: SectionProps): React.JSX.Element {
 }
 
 function App(): React.JSX.Element {
+  const handleNotificationPermission = async () => {
+    const status = await getPermissionStatus();
+    console.log('Permission status:', status);
+    switch (status) {
+      case 'granted':
+      case 'denied':
+        break;
+      case 'shouldRequest':
+      case 'shouldExplainThenRequest':
+        await requestPermissions();
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    handleNotificationPermission();
+
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      handleAppStateChange(nextAppState);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -63,36 +102,11 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Provider store={store}>
+      <SafeAreaView style={backgroundStyle}>
+        <TestScreen />
+      </SafeAreaView>
+    </Provider>
   );
 }
 

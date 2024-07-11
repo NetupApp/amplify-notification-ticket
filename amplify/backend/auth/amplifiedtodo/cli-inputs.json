@@ -1,0 +1,12 @@
+{
+  "version": "1",
+  "cognitoConfig": {
+    "identityPoolName": "amplifiedtodo_identitypool_044e3455",
+    "allowUnauthenticatedIdentities": true,
+    "authSelections": "identityPoolOnly",
+    "resourceName": "amplifiedtodo",
+    "sharedId": "044e3455",
+    "serviceName": "Cognito",
+    "useDefault": "manual"
+  }
+}
